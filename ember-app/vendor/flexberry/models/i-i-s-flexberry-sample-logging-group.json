@@ -1,0 +1,54 @@
+﻿{
+  "name": "IISFlexberrySampleLoggingGroup",
+  "modelName": "i-i-s-flexberry-sample-logging-group",
+  "className": "Group",
+  "nameSpace": "IIS.FlexberrySampleLogging",
+  "parentModelName": null,
+  "parentClassName": null,
+  "attrs": [
+    {
+      "name": "groupName",
+      "type": "string",
+      "flexberryType": "string",
+      "notNull": false,
+      "defaultValue": "",
+      "stored": true,
+      "ordered": false
+    }
+  ],
+  "belongsTo": [],
+  "hasMany": [],
+  "projections": [
+    {
+      "name": "GroupE",
+      "modelName": "i-i-s-flexberry-sample-logging-group",
+      "attrs": [
+        {
+          "name": "groupName",
+          "caption": "Название группы",
+          "hidden": false,
+          "index": 0
+        }
+      ],
+      "belongsTo": [],
+      "hasMany": []
+    },
+    {
+      "name": "GroupL",
+      "modelName": "i-i-s-flexberry-sample-logging-group",
+      "attrs": [
+        {
+          "name": "groupName",
+          "caption": "Название группы",
+          "hidden": false,
+          "index": 0
+        }
+      ],
+      "belongsTo": [],
+      "hasMany": []
+    }
+  ],
+  "stored": true,
+  "offline": true,
+  "external": false
+}

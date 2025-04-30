@@ -1,0 +1,18 @@
+{
+    "name": "my-ml-panel",
+    "version": "1.0.0",
+    "scripts": {
+      "dev": "grafana-toolkit plugin:dev",
+      "build": "grafana-toolkit plugin:build"
+    },
+    "dependencies": {
+      "@grafana/data": "^9.0.0",
+      "@grafana/ui": "^9.0.0",
+      "react": "^17.0.0",
+      "react-dom": "^17.0.0"
+    },
+    "devDependencies": {
+      "@grafana/toolkit": "^9.0.0"
+    }
+  }
+  

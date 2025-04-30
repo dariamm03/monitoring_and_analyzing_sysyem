@@ -1,0 +1,23 @@
+﻿{
+  "propertyLookup": [
+    {
+      "master": null,
+      "displayAttributeName": null,
+      "required": false,
+      "relationName": "Group",
+      "projection": "GroupL",
+      "detailModelName": null
+    }
+  ],
+  "external": false,
+  "caption": "Student",
+  "name": "IISFlexberrySampleLoggingStudentE",
+  "className": "StudentE",
+  "attrs": [],
+  "projections": [
+    {
+      "modelName": "i-i-s-flexberry-sample-logging-student",
+      "modelProjection": "StudentE"
+    }
+  ]
+}

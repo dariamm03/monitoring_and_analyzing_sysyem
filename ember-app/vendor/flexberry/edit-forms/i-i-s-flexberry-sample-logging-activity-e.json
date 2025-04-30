@@ -1,0 +1,14 @@
+﻿{
+  "propertyLookup": [],
+  "external": false,
+  "caption": "Activity",
+  "name": "IISFlexberrySampleLoggingActivityE",
+  "className": "ActivityE",
+  "attrs": [],
+  "projections": [
+    {
+      "modelName": "i-i-s-flexberry-sample-logging-activity",
+      "modelProjection": "ActivityE"
+    }
+  ]
+}

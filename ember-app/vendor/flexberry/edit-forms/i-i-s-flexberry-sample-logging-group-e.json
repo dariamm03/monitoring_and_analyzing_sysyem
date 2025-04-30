@@ -1,0 +1,14 @@
+﻿{
+  "propertyLookup": [],
+  "external": false,
+  "caption": "Group",
+  "name": "IISFlexberrySampleLoggingGroupE",
+  "className": "GroupE",
+  "attrs": [],
+  "projections": [
+    {
+      "modelName": "i-i-s-flexberry-sample-logging-group",
+      "modelProjection": "GroupE"
+    }
+  ]
+}

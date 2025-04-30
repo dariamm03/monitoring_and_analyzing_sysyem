@@ -1,0 +1,19 @@
+{
+    "type": "panel",
+    "name": "ML Log Predictor",
+    "id": "my-ml-panel",
+    "title": "ML Log Predictor",
+    "info": {
+      "description": "Плагин показывает предсказанные критические ошибки на основе логов.",
+      "author": {
+        "name": "Твоё имя или команда"
+      },
+      "keywords": ["logs", "machine learning", "security", "errors"],
+      "version": "1.0.0"
+    },
+    "dependencies": {
+      "grafanaVersion": "9.0.0",
+      "plugins": []
+    }
+  }
+  

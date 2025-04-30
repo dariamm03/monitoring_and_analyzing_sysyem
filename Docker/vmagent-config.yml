@@ -1,0 +1,18 @@
+global:
+  scrape_interval: 15s  # Интервал сбора метрик
+
+scrape_configs:
+  # Сбор метрик с Prometheus
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['prometheus:9090']
+
+  # Сбор метрик с VictoriaMetrics
+  - job_name: 'victoriametrics'
+    static_configs:
+      - targets: ['victoriametrics:8428']
+
+  # Пример добавления других источников
+  - job_name: 'node'
+    static_configs:
+      - targets: ['localhost:9100']

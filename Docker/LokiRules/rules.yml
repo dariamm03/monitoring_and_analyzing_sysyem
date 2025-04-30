@@ -1,0 +1,12 @@
+﻿groups:
+- name: critical-errors
+  interval: 1m
+  rules:
+  - alert: AppError
+    expr: 'count_over_time({job="syslog"} |~ "error|exception"[1m]) > 0'
+    for: 1m
+    labels:
+      severity: 'critical'
+    annotations:
+      summary: "Error in application"
+      description: "Found {{ $value }} errors in last minute"

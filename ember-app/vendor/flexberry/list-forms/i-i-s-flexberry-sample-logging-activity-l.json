@@ -1,0 +1,15 @@
+﻿{
+  "newForm": "i-i-s-flexberry-sample-logging-activity-e",
+  "editForm": "i-i-s-flexberry-sample-logging-activity-e",
+  "external": false,
+  "caption": "Activity",
+  "name": "IISFlexberrySampleLoggingActivityL",
+  "className": "ActivityL",
+  "attrs": [],
+  "projections": [
+    {
+      "modelName": "i-i-s-flexberry-sample-logging-activity",
+      "modelProjection": "ActivityL"
+    }
+  ]
+}

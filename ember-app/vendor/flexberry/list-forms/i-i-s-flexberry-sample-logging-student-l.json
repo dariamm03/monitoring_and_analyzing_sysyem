@@ -1,0 +1,15 @@
+﻿{
+  "newForm": "i-i-s-flexberry-sample-logging-student-e",
+  "editForm": "i-i-s-flexberry-sample-logging-student-e",
+  "external": false,
+  "caption": "Student",
+  "name": "IISFlexberrySampleLoggingStudentL",
+  "className": "StudentL",
+  "attrs": [],
+  "projections": [
+    {
+      "modelName": "i-i-s-flexberry-sample-logging-student",
+      "modelProjection": "StudentL"
+    }
+  ]
+}

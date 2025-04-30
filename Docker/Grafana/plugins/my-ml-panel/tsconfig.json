@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+      "jsx": "react",                   // ✅ это ключевое!
+      "esModuleInterop": true,
+      "allowJs": true,
+      "target": "es2015",
+      "module": "esnext",
+      "moduleResolution": "node",
+      "resolveJsonModule": true,
+      "sourceMap": true,
+      "lib": ["dom", "es2015"]
+    },
+    "include": ["src"]
+  }
+  

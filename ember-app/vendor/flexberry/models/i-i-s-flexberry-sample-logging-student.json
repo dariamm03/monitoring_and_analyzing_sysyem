@@ -1,0 +1,148 @@
+﻿{
+  "name": "IISFlexberrySampleLoggingStudent",
+  "modelName": "i-i-s-flexberry-sample-logging-student",
+  "className": "Student",
+  "nameSpace": "IIS.FlexberrySampleLogging",
+  "parentModelName": null,
+  "parentClassName": null,
+  "attrs": [
+    {
+      "name": "age",
+      "type": "number",
+      "flexberryType": "int",
+      "notNull": false,
+      "defaultValue": "",
+      "stored": true,
+      "ordered": false
+    },
+    {
+      "name": "sex",
+      "type": "string",
+      "flexberryType": "string",
+      "notNull": false,
+      "defaultValue": "",
+      "stored": true,
+      "ordered": false
+    },
+    {
+      "name": "studentName",
+      "type": "string",
+      "flexberryType": "string",
+      "notNull": false,
+      "defaultValue": "",
+      "stored": true,
+      "ordered": false
+    }
+  ],
+  "belongsTo": [
+    {
+      "polymorphic": false,
+      "presence": false,
+      "name": "group",
+      "relatedTo": "i-i-s-flexberry-sample-logging-group",
+      "inverse": null
+    }
+  ],
+  "hasMany": [],
+  "projections": [
+    {
+      "name": "StudentE",
+      "modelName": "i-i-s-flexberry-sample-logging-student",
+      "attrs": [
+        {
+          "name": "studentName",
+          "caption": "Имя студента",
+          "hidden": false,
+          "index": 0
+        },
+        {
+          "name": "age",
+          "caption": "Возраст",
+          "hidden": false,
+          "index": 1
+        },
+        {
+          "name": "sex",
+          "caption": "Пол",
+          "hidden": false,
+          "index": 2
+        }
+      ],
+      "belongsTo": [
+        {
+          "lookupValue": "groupName",
+          "lookupValueField": "groupName",
+          "relationName": "Group",
+          "belongsTo": [],
+          "hidden": false,
+          "attrs": [
+            {
+              "name": "groupName",
+              "caption": "Название группы",
+              "hidden": true,
+              "index": 4
+            }
+          ],
+          "index": 3,
+          "type": "standard",
+          "caption": "Группа",
+          "name": "group",
+          "relatedTo": "i-i-s-flexberry-sample-logging-group",
+          "inverse": null
+        }
+      ],
+      "hasMany": []
+    },
+    {
+      "name": "StudentL",
+      "modelName": "i-i-s-flexberry-sample-logging-student",
+      "attrs": [
+        {
+          "name": "studentName",
+          "caption": "Имя студента",
+          "hidden": false,
+          "index": 0
+        },
+        {
+          "name": "age",
+          "caption": "Возраст",
+          "hidden": false,
+          "index": 1
+        },
+        {
+          "name": "sex",
+          "caption": "Пол",
+          "hidden": false,
+          "index": 2
+        }
+      ],
+      "belongsTo": [
+        {
+          "lookupValue": null,
+          "lookupValueField": null,
+          "relationName": "Group",
+          "belongsTo": [],
+          "hidden": false,
+          "attrs": [
+            {
+              "name": "groupName",
+              "caption": "Группа",
+              "hidden": false,
+              "index": 3
+            }
+          ],
+          "index": -1,
+          "type": "default",
+          "caption": "Группа",
+          "name": "group",
+          "relatedTo": "i-i-s-flexberry-sample-logging-group",
+          "inverse": null
+        }
+      ],
+      "hasMany": []
+    }
+  ],
+  "stored": true,
+  "offline": true,
+  "external": false
+}

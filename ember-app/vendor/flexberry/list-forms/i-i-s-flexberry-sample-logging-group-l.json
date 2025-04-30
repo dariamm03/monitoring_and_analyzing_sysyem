@@ -1,0 +1,15 @@
+﻿{
+  "newForm": "i-i-s-flexberry-sample-logging-group-e",
+  "editForm": "i-i-s-flexberry-sample-logging-group-e",
+  "external": false,
+  "caption": "Group",
+  "name": "IISFlexberrySampleLoggingGroupL",
+  "className": "GroupL",
+  "attrs": [],
+  "projections": [
+    {
+      "modelName": "i-i-s-flexberry-sample-logging-group",
+      "modelProjection": "GroupL"
+    }
+  ]
+}

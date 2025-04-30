@@ -1,0 +1,75 @@
+﻿{
+  "name": "IISFlexberrySampleLoggingActivity",
+  "modelName": "i-i-s-flexberry-sample-logging-activity",
+  "className": "Activity",
+  "nameSpace": "IIS.FlexberrySampleLogging",
+  "parentModelName": null,
+  "parentClassName": null,
+  "attrs": [
+    {
+      "name": "activityName",
+      "type": "string",
+      "flexberryType": "string",
+      "notNull": false,
+      "defaultValue": "",
+      "stored": true,
+      "ordered": false
+    },
+    {
+      "name": "avaluable",
+      "type": "boolean",
+      "flexberryType": "bool",
+      "notNull": false,
+      "defaultValue": "",
+      "stored": true,
+      "ordered": false
+    }
+  ],
+  "belongsTo": [],
+  "hasMany": [],
+  "projections": [
+    {
+      "name": "ActivityE",
+      "modelName": "i-i-s-flexberry-sample-logging-activity",
+      "attrs": [
+        {
+          "name": "activityName",
+          "caption": "Название мероприятия",
+          "hidden": false,
+          "index": 0
+        },
+        {
+          "name": "avaluable",
+          "caption": "Доступно",
+          "hidden": false,
+          "index": 1
+        }
+      ],
+      "belongsTo": [],
+      "hasMany": []
+    },
+    {
+      "name": "ActivityL",
+      "modelName": "i-i-s-flexberry-sample-logging-activity",
+      "attrs": [
+        {
+          "name": "activityName",
+          "caption": "Название мероприятия",
+          "hidden": false,
+          "index": 0
+        },
+        {
+          "name": "avaluable",
+          "caption": "Доступно",
+          "hidden": false,
+          "index": 1
+        }
+      ],
+      "belongsTo": [],
+      "hasMany": []
+    }
+  ],
+  "stored": true,
+  "offline": true,
+  "external": false
+}

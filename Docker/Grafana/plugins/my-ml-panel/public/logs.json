@@ -1,0 +1,17 @@
+[
+    {
+      "timestamp": "2025-04-20T01:20:00",
+      "user": "admin",
+      "app": "ICSSoft.STORMNET.LogService",
+      "message": "SecurityException: User not found",
+      "probability": 0.98
+    },
+    {
+      "timestamp": "2025-04-20T01:23:00",
+      "user": "unknown",
+      "app": "CASEBERRY",
+      "message": "TimeoutException on DB call",
+      "probability": 0.73
+    }
+  ]
+  

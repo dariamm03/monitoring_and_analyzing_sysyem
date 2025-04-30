@@ -1,0 +1,51 @@
+auth_enabled: false
+
+server:
+  http_listen_port: 3100
+  grpc_listen_port: 9096
+
+common:
+  path_prefix: /tmp/loki
+  storage:
+    filesystem:
+      chunks_directory: /tmp/loki/chunks
+      rules_directory: /etc/loki/rules  # Директория для хранения правил
+  replication_factor: 1
+  ring:
+    instance_addr: 127.0.0.1
+    kvstore:
+      store: inmemory
+
+limits_config:
+  allow_structured_metadata: false
+
+query_range:
+  results_cache:
+    cache:
+      embedded_cache:
+        enabled: true
+        max_size_mb: 100
+
+schema_config:
+  configs:
+    - from: 2020-10-24
+      store: boltdb-shipper
+      object_store: filesystem
+      schema: v11
+      index:
+        prefix: index_
+        period: 24h
+
+ruler:
+  rule_files:
+    - /etc/loki/rules/rules.yml
+  alertmanager_url: http://alertmanager:9093
+  enable_api: true
+  enable_alertmanager_v2: true  # Добавьте эту строку
+  storage:
+    type: local
+    local:
+       directory: /etc/loki/rules  # Должно совпадать с common.storage.filesystem.rules_directory
+       disable_fsync: true
+       poll_interval: 10s
+  rule_path: /etc/loki/rules  # Временная директория для обработки

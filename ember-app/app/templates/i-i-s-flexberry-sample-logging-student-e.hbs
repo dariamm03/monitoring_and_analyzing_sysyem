@@ -1,0 +1,75 @@
+<h3 class="ui header">{{t "forms.i-i-s-flexberry-sample-logging-student-e.caption"}}</h3>
+
+<form class="ui form flexberry-vertical-form" role="form">
+  {{flexberry-error error=error}}
+  <div class="field">
+    <div class="flexberry-edit-panel">
+      {{#unless readonly}}
+        <button class="ui button save-button" {{action "save"}}>
+          {{t "forms.edit-form.save-button-text"}}
+        </button>
+        {{#unless model.isNew}}
+          <button class="ui button save-del-button" {{action "delete"}}>
+            {{t "forms.edit-form.delete-button-text"}}
+          </button>
+        {{/unless}}
+      {{/unless}}
+      <button class="ui button close-button" {{action "close"}}>
+        {{t "forms.edit-form.close-button-text"}}
+      </button>
+    </div>
+  </div>
+  <div class="field flexberry-validationsummary-container">
+    <div class="sixteen wide">
+      {{flexberry-validationsummary errors=(v-get validationObject "messages")}}
+    </div>
+  </div>
+  <div class="field">
+    {{flexberry-field
+      readonly=readonly
+      value=model.studentName
+      class=(if (v-get validationModel "studentName" "isInvalid") "error")
+      label=(t "forms.i-i-s-flexberry-sample-logging-student-e.studentName-caption")
+      data-test-i-i-s-flexberry-sample-logging-student-e-studentName=true
+    }}
+    {{flexberry-validationmessage error=(v-get validationModel "studentName" "message")}}
+  </div>
+  <div class="field">
+    {{flexberry-field
+      readonly=readonly
+      value=model.age
+      class=(if (v-get validationModel "age" "isInvalid") "error")
+      label=(t "forms.i-i-s-flexberry-sample-logging-student-e.age-caption")
+      data-test-i-i-s-flexberry-sample-logging-student-e-age=true
+    }}
+    {{flexberry-validationmessage error=(v-get validationModel "age" "message")}}
+  </div>
+  <div class="field">
+    {{flexberry-field
+      readonly=readonly
+      value=model.sex
+      class=(if (v-get validationModel "sex" "isInvalid") "error")
+      label=(t "forms.i-i-s-flexberry-sample-logging-student-e.sex-caption")
+      data-test-i-i-s-flexberry-sample-logging-student-e-sex=true
+    }}
+    {{flexberry-validationmessage error=(v-get validationModel "sex" "message")}}
+  </div>
+  <div class="field">
+    <label>{{t "forms.i-i-s-flexberry-sample-logging-student-e.group-caption"}}</label>
+    {{flexberry-lookup
+      choose="showLookupDialog"
+      remove="removeLookupValue"
+      value=model.group
+      displayAttributeName="groupName"
+      autocomplete=true
+      relationName="group"
+      projection="GroupL"
+      title=(t "forms.i-i-s-flexberry-sample-logging-student-e.group-caption")
+      readonly=readonly
+      componentName="groupLookup"
+      class=(if (v-get validationModel "group" "isInvalid") "error")
+      data-test-i-i-s-flexberry-sample-logging-student-e-group=true
+    }}
+    {{flexberry-validationmessage error=(v-get validationModel "group" "message")}}
+  </div>
+</form>

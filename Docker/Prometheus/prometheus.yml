@@ -1,0 +1,23 @@
+global:
+  scrape_interval: 15s  # Интервал сбора метрик
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['prometheus:9090']  # Адрес Prometheus внутри Docker сети
+
+  - job_name: 'victoriametrics'
+    static_configs:
+      - targets: ['victoriametrics:8428']  # Адрес VictoriaMetrics внутри Docker сети
+
+  - job_name: 'node'
+    static_configs:
+      - targets: ['node_exporter:9100']  # Адрес Node Exporter, если используется
+
+  - job_name: 'windows'
+    static_configs:
+      - targets: ['192.168.0.103:9182'] 
+
+  - job_name: 'loki'
+    static_configs:
+      - targets: ['loki:3100']

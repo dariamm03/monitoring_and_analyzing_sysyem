@@ -1,0 +1,36 @@
+﻿{
+  "applicationCaption": "Flexberry sample logging",
+  "applicationTitle": "Flexberry sample logging",
+  "items": [
+    {
+      "link": null,
+      "menuName": "flexberry-sample-logging",
+      "caption": "FlexberrySampleLogging",
+      "title": "FlexberrySampleLogging",
+      "children": [
+        {
+          "link": "i-i-s-flexberry-sample-logging-activity-l",
+          "menuName": null,
+          "caption": "Activity",
+          "title": "",
+          "children": null
+        },
+        {
+          "link": "i-i-s-flexberry-sample-logging-student-l",
+          "menuName": null,
+          "caption": "Student",
+          "title": "",
+          "children": null
+        },
+        {
+          "link": "i-i-s-flexberry-sample-logging-group-l",
+          "menuName": null,
+          "caption": "Group",
+          "title": "",
+          "children": null
+        }
+      ]
+    }
+  ],
+  "mobile": true
+}

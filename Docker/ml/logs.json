@@ -1,0 +1,72 @@
+[
+  {
+    "timestamp": "2024-07-02 05:26:57.587000",
+    "user": "ainetdinovasl",
+    "app": "EMBER-FLEXBERRY",
+    "message": "{\"name\":null,\"message\":null,\"fileName\":null,\"lineNumber\":null,\"columnNumber\":null,\"stack\":null}",
+    "probability": 0.0
+  },
+  {
+    "timestamp": "2022-11-01 15:04:10.383000",
+    "user": "unknown",
+    "app": "CASEBERRY",
+    "message": "",
+    "probability": 0.0
+  },
+  {
+    "timestamp": "2023-10-17 02:04:37.787000",
+    "user": "evdokimovavd",
+    "app": "EMBER-FLEXBERRY",
+    "message": "{\"name\":null,\"message\":null,\"fileName\":null,\"lineNumber\":null,\"columnNumber\":null,\"stack\":null}",
+    "probability": 0.0
+  },
+  {
+    "timestamp": "2022-11-23 16:38:00.303000",
+    "user": "unknown",
+    "app": "CASEBERRY",
+    "message": "",
+    "probability": 0.0
+  },
+  {
+    "timestamp": "2022-08-17 15:13:03.817000",
+    "user": "unknown",
+    "app": "CASEBERRY",
+    "message": "",
+    "probability": 0.0
+  },
+  {
+    "timestamp": "2024-03-28 01:59:50.493000",
+    "user": "vysotckiiaa",
+    "app": "EMBER-FLEXBERRY",
+    "message": "{\"name\":\"Error\",\"message\":\"Attempted to handle event `didSetProperty` on <ember-app@model:armti-test-mode-act::ember17782:bbb3eba3-3cfc-476c-9ea4-cf33ab82951f> while in state root.deleted.saved. Called with {name: actNumber, oldValue: undefined, originalValue: undefined, value: 2024-КР/ПРТ-}.\",\"file",
+    "probability": 1.0
+  },
+  {
+    "timestamp": "2023-07-18 05:05:05.657000",
+    "user": "petukhovaga",
+    "app": "EMBER-FLEXBERRY",
+    "message": "{\"name\":null,\"message\":null,\"fileName\":null,\"lineNumber\":null,\"columnNumber\":null,\"stack\":null}",
+    "probability": 0.0
+  },
+  {
+    "timestamp": "2022-09-21 12:52:04.570000",
+    "user": "unknown",
+    "app": "CASEBERRY",
+    "message": "",
+    "probability": 0.0
+  },
+  {
+    "timestamp": "2022-03-11 09:05:41.113000",
+    "user": "unknown",
+    "app": "CASEBERRY",
+    "message": "",
+    "probability": 0.0
+  },
+  {
+    "timestamp": "2023-10-12 02:01:27.840000",
+    "user": "zhukovap",
+    "app": "EMBER-FLEXBERRY",
+    "message": "{\"name\":null,\"message\":null,\"fileName\":null,\"lineNumber\":null,\"columnNumber\":null,\"stack\":null}",
+    "probability": 0.0
+  }
+]

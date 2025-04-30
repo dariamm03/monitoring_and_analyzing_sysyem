@@ -1,0 +1,154 @@
+﻿
+networks:
+  monitoring:  
+
+services:
+  loki:
+    image: grafana/loki
+    ports:
+      - 3100:3100
+    command: 
+      -config.file=/etc/loki/local-config.yaml
+      - '-config.expand-env=true'
+      - '-alertmanager.url=http://alertmanager:9093'
+    networks:
+      - monitoring
+    volumes:
+      - LOKIDB:/loki
+      - ./LokiRules:/etc/loki/rules:ro
+      - ./GrafanaLoki/loki-config.yaml:/etc/loki/loki-config.yaml
+      - ./loki-temp:/tmp/loki
+  promtail:
+    image: grafana/promtail
+    ports:
+      - 1514:1514
+    volumes:
+      - /var/log:/var/log
+      - ./Promtail:/etc/promtail
+    command: 
+      -config.file=/etc/promtail/promtail-config.yaml
+      - "-config.expand-env=true" 
+    networks:
+      - monitoring
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./Prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    restart: unless-stopped  
+    networks:
+      - monitoring
+
+
+  vmagent:
+    image: victoriametrics/vmagent:latest 
+    container_name: vmagent
+    ports:
+      - "8429:8428"  # Порт для сбора метрик через vmagent
+    volumes:
+      - ./vmagent-config:/etc/vmagent  
+      - ./Prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--promscrape.config=/etc/prometheus/prometheus.yml'  
+      - '--remoteWrite.url=http://victoriametrics:8428/api/v1/write' 
+    restart: unless-stopped
+    networks:
+      - monitoring 
+
+
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - 3001:3000
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: 2021555Dar
+      GF_SECURITY_ADMIN_USER: dariam03
+
+    networks:
+      - monitoring
+    volumes:
+    - ./Grafana/plugins:/var/lib/grafana/plugins
+
+    depends_on:
+      - prometheus
+
+  predictor_service:
+    build:
+      context: ./ml
+      dockerfile: Dockerfile
+    image: log-analyzer
+    container_name: predictor_service
+    environment:
+      - TELEGRAM_TOKEN="8105294907:AAGzxwCWn174vlDuYJ6hEZKSM0d6hjkU1qg"
+    working_dir: /app
+    restart: always
+    networks:
+      - monitoring
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./ml:/app
+      - ./ml/model.pkl:/app/model.pkl
+
+
+  telegram_bot:
+    build: 
+      context: ./telegram_bot
+      dockerfile: Dockerfile
+    container_name: telegram_bot
+    command: python app_polling.py
+    environment:
+      - TELEGRAM_TOKEN=8105294907:AAGzxwCWn174vlDuYJ6hEZKSM0d6hjkU1qg
+    volumes:
+      - ./telegram_bot:/app
+      - ./settings:/app/settings
+      - ./logs:/app/logs
+    restart: always
+    depends_on:
+      - predictor_service
+    networks:
+      - monitoring
+
+  notification_sender:
+    build:
+      context: ./notification_sender
+    command: python notification_sender.py
+    volumes:
+      - ./notification_sender:/app
+      - ./telegram_bot/settings:/app/settings 
+      - ./ml/logs.csv:/app/logs.csv            
+    environment:
+      - TELEGRAM_TOKEN=8105294907:AAGzxwCWn174vlDuYJ6hEZKSM0d6hjkU1qg
+      - PREDICTOR_URL = "http://predictor_service:8000/predict"
+      - LOGS_FILE=/app/logs.csv
+    depends_on:
+      - predictor_service
+    restart: always
+    networks:
+      - monitoring
+
+
+  alertmanager:
+    image: prom/alertmanager:latest
+    ports:
+      - "9093:9093"
+    volumes:
+      - ./Alertmanager/alertmanager.yml:/etc/alertmanager/config.yml
+    command:
+      - '--config.file=/etc/alertmanager/config.yml'
+    networks:
+      - monitoring
+
+volumes:
+  GLPGDB:
+  LOKIDB:
+  prometheus_data:
+  vm_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./vm_data
