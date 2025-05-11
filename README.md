@@ -20,21 +20,3 @@
 ### Общая схема стенда
 
 ![Scheme](docs/images/main_scheme.png)
-
-### Запуск в Docker
-
-1) Собрать образы с помощью Flexberry.Logging.Sample/Docker/create-image.cmd
-
-2) Запустить контейнеры с помощью Flexberry.Logging.Sample/Docker/start.cmd
-
-**Web-интерфейс Grafana**:
-
-http://localhost:3000
-
-login: admin
-pass: usr123
-
-После первого запуска нужно добавить Loki в качестве DataSource
-
-[Инструкция по работе с Grafana](/docs/Работа%20с%20Grafana%20Loki.md).
-
