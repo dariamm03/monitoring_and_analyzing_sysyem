@@ -23,6 +23,7 @@
     using NewPlatform.Flexberry.Services;
 
     using IIS.FlexberrySampleLogging.SyslogLogging;
+   
 
     /// <summary>
     /// Класс настройки запуска приложения.
@@ -67,9 +68,15 @@
             services.AddControllers().AddControllersAsServices();
 
             services.AddCors();
+
+            services.AddHttpClient();
+            services.AddHostedService<ErrorSpikeDetectorService>();
+
             services
                 .AddHealthChecks()
                 .AddNpgSql(connStr);
+            
+            services.AddHostedService<SqlMonitoringService>();
         }
 
         /// <summary>

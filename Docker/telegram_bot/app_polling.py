@@ -17,7 +17,7 @@ from telegram.ext import (
 from notification_sender import send_notification
 
 # Стейты для ConversationHandler
-MAIN_MENU, CHOOSING_SETTING, CHOOSING_THRESHOLD, CHOOSING_INTERVAL = range(4)
+MAIN_MENU, CHOOSING_SETTING, CHOOSING_THRESHOLD, CHOOSING_INTERVAL, CHOOSING_LOG_LEVEL, CHOOSING_LOG_WINDOW, CHOOSING_LOG_THRESHOLD, CHOOSING_LOG_INTERVAL = range(8)
 
 # Пути к файлам
 SETTINGS_DIR = "/app/settings"
@@ -42,6 +42,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def show_main_menu(update: Update):
     buttons = [
+    [KeyboardButton("📫 Настроить лог-мониторинг")],
     [KeyboardButton("📋 Показать текущие настройки")],
     [KeyboardButton("🛠️ Настроить уведомления")],
     [KeyboardButton("📋 Получить отчет")]
@@ -61,6 +62,8 @@ async def main_menu_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif text == "📋 Получить отчет":   # тут тоже исправь! 📋, а не 📋
         await ask_report_format(update)
         return MAIN_MENU
+    elif text == "📫 Настроить лог-мониторинг":
+        return await ask_log_level(update)
     else:
         await update.message.reply_text("❗ Пожалуйста, выберите действие с кнопок 👆")
         return MAIN_MENU
@@ -87,11 +90,88 @@ async def report_format_handler(update: Update, context: ContextTypes.DEFAULT_TY
 async def show_settings(update: Update):
     user_id = str(update.effective_user.id)
     settings = load_user_settings(user_id)
-    await update.message.reply_text(
+
+    text = (
         f"📋 Ваши настройки:\n"
-        f"• Порог ошибки: {settings['threshold']}\n"
-        f"• Интервал уведомлений: {settings['notification_interval']} сек"
+        f"• Порог ошибки (ML): {settings.get('threshold', '?')}\n"
+        f"• Интервал уведомлений (ML): {settings.get('notification_interval', '?')} сек\n"
     )
+
+    log_settings = settings.get("log_monitoring")
+    if log_settings:
+        text += (
+            "\n🪵 Настройки лог-мониторинга:\n"
+            f"• Уровень: {log_settings.get('level', '?')}\n"
+            f"• Окно: {log_settings.get('window_minutes', '?')} мин\n"
+            f"• Порог всплеска: x{log_settings.get('threshold', '?')}\n"
+            f"• Интервал уведомлений: {log_settings.get('notification_interval', '?')} сек\n"
+        )
+
+    await update.message.reply_text(text)
+
+
+async def ask_log_level(update: Update):
+    buttons = [[KeyboardButton("ERROR"), KeyboardButton("INFO"), KeyboardButton("ALL")]]
+    markup = ReplyKeyboardMarkup(buttons, resize_keyboard=True)
+    await update.message.reply_text("Выберите уровень логов:", reply_markup=markup)
+    return CHOOSING_LOG_LEVEL
+
+async def log_level_chosen(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    level = update.message.text.upper()
+    user_id = str(update.effective_user.id)
+    settings = load_user_settings(user_id)
+    settings.setdefault("log_monitoring", {})
+    settings["log_monitoring"]["level"] = level
+    save_user_settings(user_id, settings)
+    await update.message.reply_text(f"✅ Уровень логов установлен: {level}")
+    return await ask_log_window(update)
+
+async def ask_log_window(update: Update):
+    buttons = [[KeyboardButton("5"), KeyboardButton("15"), KeyboardButton("60")]]
+    markup = ReplyKeyboardMarkup(buttons, resize_keyboard=True)
+    await update.message.reply_text("Укажите окно анализа логов (в минутах):", reply_markup=markup)
+    return CHOOSING_LOG_WINDOW
+
+async def log_window_chosen(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    window = int(update.message.text)
+    user_id = str(update.effective_user.id)
+    settings = load_user_settings(user_id)
+    settings["log_monitoring"]["window_minutes"] = window
+    save_user_settings(user_id, settings)
+    await update.message.reply_text(f"✅ Окно логов: {window} минут")
+    return await ask_log_threshold(update)
+
+async def ask_log_threshold(update: Update):
+    buttons = [[KeyboardButton("2.0"), KeyboardButton("3.0"), KeyboardButton("5.0")]]
+    markup = ReplyKeyboardMarkup(buttons, resize_keyboard=True)
+    await update.message.reply_text("Укажите порог всплеска:", reply_markup=markup)
+    return CHOOSING_LOG_THRESHOLD
+
+async def log_threshold_chosen(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    threshold = float(update.message.text)
+    user_id = str(update.effective_user.id)
+    settings = load_user_settings(user_id)
+    settings["log_monitoring"]["threshold"] = threshold
+    save_user_settings(user_id, settings)
+    await update.message.reply_text(f"✅ Порог установлен: x{threshold}")
+    return await ask_log_interval(update)
+
+async def ask_log_interval(update: Update):
+    buttons = [[KeyboardButton("300"), KeyboardButton("900"), KeyboardButton("1800")]]
+    markup = ReplyKeyboardMarkup(buttons, resize_keyboard=True)
+    await update.message.reply_text("Укажите интервал между уведомлениями (в секундах):", reply_markup=markup)
+    return CHOOSING_LOG_INTERVAL
+
+async def log_interval_chosen(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    interval = int(update.message.text)
+    user_id = str(update.effective_user.id)
+    settings = load_user_settings(user_id)
+    settings["log_monitoring"]["notification_interval"] = interval
+    save_user_settings(user_id, settings)
+    await update.message.reply_text(f"✅ Интервал установлен: {interval} секунд")
+    await show_main_menu(update)
+    return MAIN_MENU
+
 
 # -------------- Отчеты --------------
 
@@ -341,13 +421,19 @@ def main():
     entry_points=[CommandHandler('start', start)],
     states={
         MAIN_MENU: [
-            MessageHandler(filters.Regex('^(📋 Показать текущие настройки|🛠️ Настроить уведомления|📋 Получить отчет)$'), main_menu_handler),
+            MessageHandler(filters.Regex('^(📋 Показать текущие настройки|🛠️ Настроить уведомления|📋 Получить отчет|📫 Настроить лог-мониторинг)$'), main_menu_handler),
             MessageHandler(filters.Regex('^(📃 Excel-отчет|📄 PDF-отчет|🔙 Назад в меню)$'), report_format_handler),
         ],
+
 
         CHOOSING_SETTING: [MessageHandler(filters.TEXT & ~filters.COMMAND, setting_choice_handler)],
         CHOOSING_THRESHOLD: [MessageHandler(filters.TEXT & ~filters.COMMAND, threshold_chosen)],
         CHOOSING_INTERVAL: [MessageHandler(filters.TEXT & ~filters.COMMAND, interval_chosen)],
+        CHOOSING_LOG_LEVEL: [MessageHandler(filters.TEXT & ~filters.COMMAND, log_level_chosen)],
+        CHOOSING_LOG_WINDOW: [MessageHandler(filters.TEXT & ~filters.COMMAND, log_window_chosen)],
+        CHOOSING_LOG_THRESHOLD: [MessageHandler(filters.TEXT & ~filters.COMMAND, log_threshold_chosen)],
+        CHOOSING_LOG_INTERVAL: [MessageHandler(filters.TEXT & ~filters.COMMAND, log_interval_chosen)],
+
     },
     fallbacks=[CommandHandler('start', start)],
 )
