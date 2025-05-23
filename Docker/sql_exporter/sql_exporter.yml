@@ -1,0 +1,9 @@
+global:
+  scrape_timeout_offset: 500ms
+  min_interval: 10s
+
+target:
+  data_source_name: "sqlserver://armti_user:armti_userp@ss@dis-dbr.timepath.ru:1433"
+  collectors: [mssql_standard]
+  collector_files:
+    - /config/mssql_standard.collector.yml

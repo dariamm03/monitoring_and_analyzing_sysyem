@@ -71,7 +71,7 @@ public class ErrorSpikeDetectorService : BackgroundService
 
                     _logger.LogInformation($"🔍 chat_id={chatId}, level={level}, count={count}, baseline={baseline:F1}, threshold={threshold}");
 
-                    if (count / baseline >= threshold)
+                    if ((true)||count / baseline >= threshold)
                     {
                         if (!lastSentTimes.TryGetValue(chatId, out var lastTime) || (DateTime.UtcNow - lastTime).TotalSeconds >= interval)
                         {
@@ -130,7 +130,7 @@ public class ErrorSpikeDetectorService : BackgroundService
         content.Add(new ByteArrayContent(imageBytes), "photo", "grafana.png");
         content.Add(new StringContent(chatId), "chat_id");
         content.Add(new StringContent(caption), "caption");
-        content.Add(new StringContent("Markdown"), "parse_mode");
+        content.Add(new StringContent("HTML"), "parse_mode");
 
         var client = _httpClientFactory.CreateClient();
         var response = await client.PostAsync(url, content);
@@ -166,7 +166,7 @@ public class ErrorSpikeDetectorService : BackgroundService
         string encoded = Uri.EscapeDataString(json);
         encoded = encoded.Replace("_", "%5F");
 
-        return $"http://localhost:3001/explore?orgId=1&left={encoded}";
+        return $"https://5c3b85e0b1e9ca.lhr.life/explore?orgId=1&left={encoded}";
     }
 
 
@@ -195,17 +195,18 @@ public class ErrorSpikeDetectorService : BackgroundService
             ? string.Join("\n", samples.Select(l => $"• {l.Split('\n')[0].Trim()}"))
             : "_Нет примеров логов._";
 
-        string message = $"⚠️ *{serviceName}*: превышение логов уровня *{level}*\n\n" +
-                $"📌 *Время:* {timestamp}\n" +
-                $"📈 За последние *{window} мин*: {count} сообщений\n" +
-                $"📉 В среднем за час: {baseline:F1}\n" +
-                $"🚨 Порог срабатывания: превышение в x{threshold:F1}\n\n" +
-                $"🧾 *Примеры:*\n{logsText}\n\n" +
-                $"🔎 <a href=\"{lokiLink}\">Открыть в Grafana</a>\n" + 
-                $"_Отправлено автоматически. Проверьте систему._";
+        string message = $"⚠️ <b>{serviceName}</b>: превышение логов уровня <b>{level}</b>\n\n" +
+                 $"📌 <b>Время:</b> {timestamp}\n" +
+                 $"📈 За последние <b>{window} мин</b>: {count} сообщений\n" +
+                 $"📉 В среднем за час: <b>{baseline:F1}</b>\n" +
+                 $"🚨 Порог срабатывания: превышение в x<b>{threshold:F1}</b>\n\n" +
+                 $"🧾 <b>Примеры:</b>\n{logsText}\n\n" +
+                 $"🔎 <a href=\"{lokiLink}\">Открыть в Grafana</a>\n" +
+                 $"<i>Отправлено автоматически. Проверьте систему.</i>";
 
-        string renderUrl = $"http://localhost:3001/render/d-solo/delj0k4800cn4f/log-monitoring" +
-                   $"?orgId=1&from=now-6h&to=now&panelId=1&width=1000&height=500&tz=browser";
+
+        string renderUrl = "https://5c3b85e0b1e9ca.lhr.life/render/d-solo/demh3ptdelreof/loki?orgId=1&from=now-30m&to=now&panelId=7&width=1000&height=500&tz=UTC";
+
 
         try
         {
@@ -222,7 +223,7 @@ public class ErrorSpikeDetectorService : BackgroundService
             {
                 { "chat_id", chatId },
                 { "text", message },
-                { "parse_mode", "Markdown" },
+                { "parse_mode", "HTML" },
                 { "disable_web_page_preview", "true" }
             });
 

@@ -4,6 +4,7 @@ import os
 import pandas as pd
 import requests
 from fpdf import FPDF
+from lock_monitor import get_active_locks
 import matplotlib.pyplot as plt
 from telegram import Update, ReplyKeyboardMarkup, KeyboardButton, InputFile
 from telegram.ext import (
@@ -41,15 +42,29 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return MAIN_MENU
 
 async def show_main_menu(update: Update):
-    buttons = [
-    [KeyboardButton("📫 Настроить лог-мониторинг")],
-    [KeyboardButton("📋 Показать текущие настройки")],
-    [KeyboardButton("🛠️ Настроить уведомления")],
-    [KeyboardButton("📋 Получить отчет")]
-]
+    user_id = str(update.effective_user.id)
+    settings = load_user_settings(user_id)
+
+    buttons = []
+
+    if is_support(settings):
+        buttons.extend([
+            [KeyboardButton("📫 Настроить лог-мониторинг")],
+            [KeyboardButton("📋 Показать текущие настройки")],
+            [KeyboardButton("🛠️ Настроить уведомления")],
+            [KeyboardButton("📋 Получить отчет")],
+        ])
+    else:
+        buttons.extend([
+            [KeyboardButton("📋 Получить отчет")],
+            [KeyboardButton("📊 Проверить блокировки сейчас")],
+            [KeyboardButton("🛠️ Настроить уведомления")],
+            [KeyboardButton("📋 Показать текущие настройки")],
+        ])
 
     markup = ReplyKeyboardMarkup(buttons, resize_keyboard=True)
     await update.message.reply_text("👋 Добро пожаловать! Что хотите сделать?", reply_markup=markup)
+
 
 async def main_menu_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = update.message.text
@@ -64,17 +79,86 @@ async def main_menu_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return MAIN_MENU
     elif text == "📫 Настроить лог-мониторинг":
         return await ask_log_level(update)
+    elif text == "📊 Проверить блокировки сейчас":
+        await handle_check_locks(update)
+        return MAIN_MENU
     else:
         await update.message.reply_text("❗ Пожалуйста, выберите действие с кнопок 👆")
         return MAIN_MENU
 
+def load_user_settings(user_id):
+    filepath = f"{SETTINGS_DIR}/{user_id}.json"
+    if os.path.exists(filepath):
+        with open(filepath, "r") as f:
+            return json.load(f)
+    else:
+        default_settings = {
+            "threshold": 0.8,
+            "notification_interval": 300,
+            "chat_id": int(user_id),
+            "role": "customer"  # или вручную меняй на "support" в JSON-файле
+        }
+        save_user_settings(user_id, default_settings)
+        return default_settings
+
+def is_support(user_settings):
+    return user_settings.get("role") == "support"
+
+async def send_lock_report(update: Update):
+    try:
+        df = pd.read_csv("/app/shared/features_unlabeled.csv")
+        total = len(df)
+        high_risk = df[df["prob"] >= 0.8]
+        top_dbs = df["db"].value_counts().head(3)
+        top_types = df["query_type_encoded"].value_counts().head(3)
+
+        text = f"📊 *Отчет по SQL-блокировкам:*\n\n"
+        text += f"• Всего запросов: {total}\n"
+        text += f"• Потенциальных блокировок: {len(high_risk)}\n"
+        text += "\n🧩 Топ-3 баз данных:\n"
+        for db, count in top_dbs.items():
+            text += f"  • {db}: {count}\n"
+        text += "\n🗂️ Топ-3 типа запросов:\n"
+        for qtype, count in top_types.items():
+            text += f"  • Тип {qtype}: {count}\n"
+
+        await update.message.reply_text(text, parse_mode="Markdown")
+    except Exception as e:
+        await update.message.reply_text(f"❗ Ошибка при создании отчета: {e}")
+
+
+async def handle_check_locks(update: Update):
+    locks = get_active_locks()
+    if not locks:
+        await update.message.reply_text("✅ Блокировок в данный момент нет.")
+        return
+
+    for lock in locks:
+        msg = (
+            f"🚨 *Обнаружена блокировка SQL!*\n"
+            f"*Сессия:* `{lock['session_id']}`\n"
+            f"*Блокирующая:* `{lock['blocking_session_id']}`\n"
+            f"*БД:* `{lock['db']}`\n"
+            f"*Команда:* `{lock['command']}`\n"
+            f"*Ожидание:* `{lock['wait_type']} ({lock['wait_time']} мс)`\n"
+            f"```{lock['sql'][:500]}```"
+        )
+        await update.message.reply_markdown(msg)
+
 
 async def ask_report_format(update: Update):
+    user_id = str(update.effective_user.id)
+    user_settings = load_user_settings(user_id)
+
     buttons = [
         [KeyboardButton("📃 Excel-отчет")],
         [KeyboardButton("📄 PDF-отчет")],
         [KeyboardButton("🔙 Назад в меню")]
     ]
+
+    if is_support(user_settings):
+        buttons.append([KeyboardButton("📊 Отчет по блокировкам")])
+
     markup = ReplyKeyboardMarkup(buttons, resize_keyboard=True)
     await update.message.reply_text("Выберите формат отчета:", reply_markup=markup)
 
@@ -84,6 +168,8 @@ async def report_format_handler(update: Update, context: ContextTypes.DEFAULT_TY
         await send_excel_report(update, context)
     elif text == "📄 PDF-отчет":
         await send_pdf_report(update, context)
+    elif text == "📊 Отчет по блокировкам":
+        await send_lock_report(update)
     elif text == "🔙 Назад в меню":
         await show_main_menu(update)
 
@@ -421,8 +507,8 @@ def main():
     entry_points=[CommandHandler('start', start)],
     states={
         MAIN_MENU: [
-            MessageHandler(filters.Regex('^(📋 Показать текущие настройки|🛠️ Настроить уведомления|📋 Получить отчет|📫 Настроить лог-мониторинг)$'), main_menu_handler),
-            MessageHandler(filters.Regex('^(📃 Excel-отчет|📄 PDF-отчет|🔙 Назад в меню)$'), report_format_handler),
+            MessageHandler(filters.Regex('^(📋 Показать текущие настройки|🛠️ Настроить уведомления|📋 Получить отчет|📫 Настроить лог-мониторинг|📊 Проверить блокировки сейчас)$'), main_menu_handler),
+            MessageHandler(filters.Regex('^(📃 Excel-отчет|📄 PDF-отчет|📊 Отчет по блокировкам|🔙 Назад в меню)$'), report_format_handler),
         ],
 
 

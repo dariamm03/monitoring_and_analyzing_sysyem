@@ -1,0 +1,21 @@
+{
+    "name": "grafana-block-alert-panel",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "dev": "grafana-toolkit plugin:dev",
+        "build": "grafana-toolkit plugin:build"
+    },
+    "devDependencies": {
+        "@grafana/data": "^10.2.0",
+        "@grafana/runtime": "^10.2.0",
+        "@grafana/toolkit": "^8.4.1",
+        "@grafana/ui": "^10.2.0",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "typescript": "^5.3.3"
+    },
+    "dependencies": {
+        "recharts": "^2.15.3"
+    }
+}

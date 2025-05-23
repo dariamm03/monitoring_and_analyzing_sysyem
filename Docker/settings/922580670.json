@@ -1,10 +1,11 @@
 {
     "threshold": 0.5,
-    "notification_interval": 300,
+    "notification_interval": 1800,
     "log_monitoring": {
         "level": "ERROR",
-        "window_minutes": 5,
-        "threshold": 1.0,
-        "notification_interval": 60
-    }
+        "window_minutes": 60,
+        "threshold": 3.0,
+        "notification_interval": 1800
+    },
+    "role": "support"
 }

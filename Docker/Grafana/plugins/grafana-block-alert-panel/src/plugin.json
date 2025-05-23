@@ -1,0 +1,17 @@
+{
+    "type": "panel",
+    "name": "Block Alert Panel",
+    "id": "grafana-block-alert-panel",
+    "includes": [],
+    "info": {
+      "keywords": ["alert", "block", "monitoring"],
+      "description": "Панель для отображения информации о блокирующих ошибках",
+      "version": "1.0.0"
+    },
+    "dependencies": {
+      "grafanaDependency": ">=9.0.0",
+      "plugins": []
+    },
+    "module": "module"
+  }
+  

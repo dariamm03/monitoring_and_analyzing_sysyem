@@ -1,6 +1,6 @@
 {
     "threshold": 0.6,
-    "notification_interval": 300,
+    "notification_interval": 1800,
     "log_monitoring": {
         "level": "ERROR",
         "window_minutes": 5,

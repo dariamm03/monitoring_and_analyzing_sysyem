@@ -26,3 +26,19 @@ scrape_configs:
       target_label: 'level'
     - source_labels: ['__syslog_message_app_name']
       target_label: 'application'
+
+- job_name: sql_query_log
+  static_configs:
+    - targets: ['localhost']
+      labels:
+        job: sql_query_log
+        source: mssql_exporter
+        level: info
+        __path__: /app/logs/queries.log
+
+- job_name: block_prediction
+  static_configs:
+    - targets: ['localhost']
+      labels:
+        job: block_prediction
+        __path__: /app/logs/block_prediction.log
