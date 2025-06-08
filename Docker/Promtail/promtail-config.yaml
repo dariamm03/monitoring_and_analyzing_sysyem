@@ -6,9 +6,12 @@ positions:
   filename: /tmp/positions.yaml
 
 clients:
-  - url: http://loki:3100/loki/api/v1/push    # Дублирование в Telegram
-    batchwait: 1s                          # Минимальная задержка
-    batchsize: 1  
+  - url: https://localhost/loki/api/v1/push
+    tls_config:
+      insecure_skip_verify: true
+    batchwait: 1s
+    batchsize: 1
+
 
 scrape_configs:
 - job_name: system
@@ -16,9 +19,9 @@ scrape_configs:
     listen_address: 0.0.0.0:1514
     labels:
       job: "syslog"
-      namespace: "default"  # Пример добавления метки "namespace"
-      pod: "my-pod"         # Пример добавления метки "pod"
-      stream: "stdout"      # Пример добавления метки "stream"
+      namespace: "default" 
+      pod: "my-pod"        
+      stream: "stdout"     
   relabel_configs:
     - source_labels: ['__syslog_message_hostname']
       target_label: 'host'
@@ -42,3 +45,13 @@ scrape_configs:
       labels:
         job: block_prediction
         __path__: /app/logs/block_prediction.log
+
+- job_name: simulated_test_logs_alt
+  static_configs:
+    - targets: ['localhost']
+      labels:
+        job: simulated_test_logs_alt
+        source: test_generator
+        level: info
+        __path__: /app/test_logs/test_alt.log
+
